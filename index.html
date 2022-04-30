@@ -136,27 +136,27 @@
     <div class="body-text">
         <script type="text/javascript">
 
-            //Width and height
+            // Width and height
             var w = 800;
             var h = 600;
 
-            //Define map
+            // Define map
             var projection = d3.geoAlbersUsa()
                 .translate([0, 0]);
 
-            //Define path
+            // Define path
             var path = d3.geoPath()
                 .projection(projection);
 
-            //Define color scale
+            // Define color scale
             var color = d3.scaleQuantize()
                 .range(["rgb(198,219,239)", "rgb(158,202,225)", "rgb(107,174,214)", "rgb(66,146,198)", "rgb(33,113,181)", "rgb(8,69,148)"])
                 .domain([7628, 24040]);
 
-            //Number formatting for population values
+            // Number formatting for dollar values
             var formatAsThousands = d3.format("$,");
 
-            //Create SVG element
+            // Create SVG element
             var svg = d3.select("body")
                 .append("svg")
                 .attr("width", w)
@@ -165,20 +165,20 @@
                 .style("stroke", "black")
                 .style("stroke-opacity", .5);
 
-            //Define panning or zooming
+            // Panning and zooming
             var zooming = function (d) {
 
-                //New offset array
+                // New offset array
                 var offset = [d3.event.transform.x, d3.event.transform.y];
 
-                //Calculate new scale
+                // Calculate new scale
                 var newScale = d3.event.transform.k * 4000;
 
-                //Update projection with adjusted scale
+                // Update projection with adjusted scale
                 projection.translate(offset)
                     .scale(newScale);
 
-                //Update all paths
+                // Update all paths
                 svg.selectAll("path")
                     .attr("d", path);
 
@@ -193,14 +193,14 @@
 
             }
 
-            //Then define the zoom behavior
+            // Zoom behavior
             var zoom = d3.zoom()
                 .on("zoom", zooming);
 
-            //The center of the country, roughly
+            // The center of the country
             var center = projection([-97.0, 39.0]);
 
-            //Create a container in which all zoom-able elements will live
+            // Create a zoom container
             var map = svg.append("g")
                 .attr("id", "map")
                 .call(zoom)
@@ -209,7 +209,7 @@
                     .scale(0.25)
                     .translate(-center[0], -center[1]));
 
-            //Create a zoom background
+            // Create a zoom background
             map.append("rect")
                 .attr("x", 0)
                 .attr("y", 0)
@@ -218,46 +218,44 @@
                 .attr("opacity", 0);
 
 
-            //Load Spend data
+            // Load Spend data
             d3.csv("SpendPerPupil.csv", function (data) {
 
 
 
-                //Load GeoJSON data
+                // Load GeoJSON data
                 d3.json("us-states.json", function (json) {
 
-                    //Merge data
-                    //Loop through once for each spend
+                    // Merge data and loop
                     for (var i = 0; i < data.length; i++) {
 
                         var dataState = data[i].state;
                         var dataValue = parseFloat(data[i].value);
 
-                        //Find the corresponding state inside the GeoJSON
+                        // Find state inside GeoJSON
                         for (var j = 0; j < json.features.length; j++) {
 
                             var jsonState = json.features[j].properties.name;
 
                             if (dataState == jsonState) {
 
-                                //Copy the data value into the JSON
+                                // Copy the data value into the JSON
                                 json.features[j].properties.value = dataValue;
 
-                                //Stop looking through the JSON
                                 break;
 
                             }
                         }
                     }
 
-                    //Bind data and create one path per GeoJSON feature
+                    // Bind data and create path
                     map.selectAll("path")
                         .data(json.features)
                         .enter()
                         .append("path")
                         .attr("d", path)
                         .style("fill", function (d) {
-                            //Get data value
+                            // Get data value
                             var value = d.properties.value;
 
                             if (value) {
@@ -267,7 +265,7 @@
                             }
                         });
 
-                    //Create state labels
+                    // Create state labels
                     map.selectAll("text")
                         .data(json.features)
                         .enter()

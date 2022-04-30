@@ -147,12 +147,12 @@
     <div class="body-text">
         <script type="text/javascript">
 
-            // set the dimensions and margins of the graph
+            // set deminsions
             var margin = { top: 20, right: 30, bottom: 30, left: 60 },
                 width = 600 - margin.left - margin.right,
                 height = 450 - margin.top - margin.bottom;
 
-            // append the svg object to the body of the page
+            // append svg object
             const svg = d3.select("#graph")
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -165,7 +165,7 @@
             //Number formatting for dollar values
             var formatAsThousands = d3.format("$,");  //e.g. converts 123456 to "123,456"
 
-            // get the data
+            // get data
             d3.csv("Agg_State.csv").then(function (data) {
 
                 // Add X axis
